@@ -1,26 +1,25 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-//import "hardhat/console.sol";
-
 contract Assessment {
     address payable public owner;
     uint256 public balance;
 
     event Deposit(uint256 amount);
     event Withdraw(uint256 amount);
+    event TransactionFees(uint256 fees);
 
     constructor(uint initBalance) payable {
         owner = payable(msg.sender);
         balance = initBalance;
     }
 
-    function getBalance() public view returns(uint256){
+    function getBalance() public view returns (uint256) {
         return balance;
     }
 
     function deposit(uint256 _amount) public payable {
-        uint _previousBalance = balance;
+        uint256 _previousBalance = balance;
 
         // make sure this is the owner
         require(msg.sender == owner, "You are not the owner of this account");
@@ -40,7 +39,7 @@ contract Assessment {
 
     function withdraw(uint256 _withdrawAmount) public {
         require(msg.sender == owner, "You are not the owner of this account");
-        uint _previousBalance = balance;
+        uint256 _previousBalance = balance;
         if (balance < _withdrawAmount) {
             revert InsufficientBalance({
                 balance: balance,
@@ -56,5 +55,15 @@ contract Assessment {
 
         // emit the event
         emit Withdraw(_withdrawAmount);
+    }
+
+    function getTransactionFees() public pure returns (uint256) {
+        // Assume a fixed transaction fee of 0.1 ETH
+        return 0.1 ether;
+    }
+
+    function showTransactionFees() public {
+        uint256 fees = getTransactionFees();
+        emit TransactionFees(fees);
     }
 }
